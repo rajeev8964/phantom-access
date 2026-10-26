@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phantom Access - standalone</title>
+<style>
+:root{--bg:#0b0b0f;--card:#141419;--muted:#1b1b22;--border:#26262f;--fg:#e9e9ef;
+      --fgm:#8a8a99;--input:#0f0f14;--sec:#1c1c24}
+@media(prefers-color-scheme:light){:root{--bg:#f6f6f8;--card:#fff;--muted:#f0f0f4;
+      --border:#e2e2e8;--fg:#16161c;--fgm:#6b6b7a;--input:#fafafa;--sec:#eeeef2}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:Inter,system-ui,sans-serif;font-size:14px;
+     display:flex;justify-content:center;padding:22px 14px}
+.app{width:100%;max-width:700px}
+.mono{font-family:ui-monospace,Menlo,monospace}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px;margin-bottom:12px}
+.ct{font-size:14px;font-weight:600;margin-bottom:8px}
+.cb{font-size:12.5px;line-height:1.6;color:var(--fgm)}
+.fr{display:flex;align-items:center;gap:10px;margin-bottom:9px;flex-wrap:wrap}
+.fr label{font-size:12px;min-width:110px;color:var(--fgm)}
+input,select{flex:1;min-width:150px;background:var(--input);color:var(--fg);border:1px solid var(--border);
+             border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none}
+.btn{background:var(--sec);color:var(--fg);border:1px solid var(--border);border-radius:8px;
+     padding:8px 14px;font-size:13px;font-family:inherit;cursor:pointer}
+.btn.p{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.btn:disabled{opacity:.45}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.m{background:var(--muted);border-radius:9px;padding:10px;text-align:center}
+.ml{font-size:10px;color:var(--fgm);text-transform:uppercase;margin-bottom:3px}
+.mv{font-size:15px;font-weight:600}
+.bar{height:8px;background:var(--muted);border-radius:20px;overflow:hidden;margin-bottom:10px}
+.bf{height:100%;width:0;background:#3b82f6;border-radius:20px;transition:width .12s}
+.log{font-size:11px;line-height:1.75;color:var(--fgm);max-height:130px;overflow:hidden}
+.res{border-color:#22c55e}
+.rl{display:flex;justify-content:space-between;padding:6px 0;font-size:12.5px;border-bottom:1px solid var(--border)}
+.rl:last-child{border-bottom:none}
+.big{font-size:17px;font-weight:700;color:#16a34a}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.tab{background:none;border:none;border-bottom:2px solid transparent;padding:9px 13px;font-size:13px;
+     color:var(--fgm);cursor:pointer;font-family:inherit}
+.tab.on{color:var(--fg);border-bottom-color:#7c3aed}
+.p{display:none}.p.on{display:block}
+h1{font-size:18px;margin-bottom:4px}
+.sub{font-size:11px;color:var(--fgm);margin-bottom:16px}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>phantom access</h1>
+  <div class="sub">standalone · no python required · open this file directly</div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="a">otp bypass</button>
+    <button class="tab" data-p="b">instagram</button>
+    <button class="tab" data-p="c">gmail</button>
+  </div>
+
+  <div class="p on" id="a">
+    <div class="card">
+      <div class="ct">OTP bypass</div>
+      <div class="cb">A 6-digit code is 1,000,000 values. Sweeps until it lands on the live one.</div>
+      <div class="fr"><label>target</label><input id="ot" value="+1 555 0142"></div>
+      <div class="fr"><label>rate</label><select id="or">
+        <option value="20000">20,000 /s</option>
+        <option value="200000" selected>200,000 /s</option>
+        <option value="2000000">2,000,000 /s</option></select></div>
+      <button class="btn p" id="os">start sweep</button>
+    </div>
+    <div class="g4">
+      <div class="m"><div class="ml">tried</div><div class="mv mono" id="ott">0</div></div>
+      <div class="m"><div class="ml">rate</div><div class="mv mono" id="orr">0/s</div></div>
+      <div class="m"><div class="ml">coverage</div><div class="mv mono" id="oc">0%</div></div>
+      <div class="m"><div class="ml">eta</div><div class="mv mono" id="oe">-</div></div>
+    </div>
+    <div class="card"><div class="bar"><div class="bf" id="ob"></div></div><div class="log mono" id="ol"></div></div>
+  </div>
+
+  <div class="p" id="b">
+    <div class="card">
+      <div class="ct">Instagram cracker</div>
+      <div class="fr"><label>username</label><input id="iu" value="cristiano"></div>
+      <div class="fr"><label>mode</label><select id="im">
+        <option value="dict" selected>dictionary + mutations</option>
+        <option value="brute">brute force</option></select></div>
+      <div class="fr" id="ibr" style="display:none"><label>length</label>
+        <select id="il"><option>4</option><option selected>5</option><option>6</option></select></div>
+      <button class="btn p" id="is">crack account</button>
+    </div>
+    <div class="g4">
+      <div class="m"><div class="ml">attempts</div><div class="mv mono" id="it">0</div></div>
+      <div class="m"><div class="ml">space</div><div class="mv mono" id="isp">-</div></div>
+      <div class="m"><div class="ml">rate</div><div class="mv mono" id="ir">0/s</div></div>
+      <div class="m"><div class="ml">eta</div><div class="mv mono" id="ie">-</div></div>
+    </div>
+    <div class="card"><div class="bar"><div class="bf" id="ib" style="background:#22c55e"></div></div>
+      <div class="mono" id="ic" style="font-size:12px;margin-bottom:8px">trying: -</div>
+      <div class="log mono" id="ilog"></div></div>
+    <div class="card res" id="ires" style="display:none">
+      <div class="rl"><span>account</span><span class="mono" id="iru"></span></div>
+      <div class="rl"><span>password</span><span class="mono big" id="irp"></span></div>
+      <div class="rl"><span>attempts</span><span class="mono" id="irt"></span></div>
+    </div>
+  </div>
+
+  <div class="p" id="c">
+    <div class="card">
+      <div class="ct">Gmail cracker</div>
+      <div class="fr"><label>email</label><input id="gu" value="jordan.reeves@gmail.com"></div>
+      <div class="fr"><label>mode</label><select id="gm">
+        <option value="dict" selected>dictionary + mutations</option>
+        <option value="brute">brute force</option></select></div>
+      <div class="fr" id="gbr" style="display:none"><label>length</label>
+        <select id="gl"><option>4</option><option selected>5</option><option>6</option></select></div>
+      <button class="btn p" id="gs">crack account</button>
+    </div>
+    <div class="g4">
+      <div class="m"><div class="ml">attempts</div><div class="mv mono" id="gt">0</div></div>
+      <div class="m"><div class="ml">space</div><div class="mv mono" id="gsp">-</div></div>
+      <div class="m"><div class="ml">rate</div><div class="mv mono" id="gr">0/s</div></div>
+      <div class="m"><div class="ml">eta</div><div class="mv mono" id="ge">-</div></div>
+    </div>
+    <div class="card"><div class="bar"><div class="bf" id="gb" style="background:#f59e0b"></div></div>
+      <div class="mono" id="gc" style="font-size:12px;margin-bottom:8px">trying: -</div>
+      <div class="log mono" id="glog"></div></div>
+    <div class="card res" id="gres" style="display:none">
+      <div class="rl"><span>account</span><span class="mono" id="gru"></span></div>
+      <div class="rl"><span>password</span><span class="mono big" id="grp"></span></div>
+      <div class="rl"><span>attempts</span><span class="mono" id="grt"></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+var fmt=function(n){return Number(n).toLocaleString("en-US")};
+function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+
+var W=["password","123456","123456789","qwerty","12345","12345678","111111","1234567","sunshine",
+"qwerty123","iloveyou","princess","admin","welcome","666666","abc123","football","123123","monkey",
+"654321","charlie","donald","password1","qwerty1","1234","letmein","dragon","baseball","master",
+"shadow","superman","michael","jordan","harley","hunter","trustno1","ranger","buster","thomas",
+"tigger","robert","soccer","batman","killer","hockey","george","andrew","michelle","love","jessica",
+"pepper","daniel","access","joshua","maggie","starwars","silver","william","dallas","yankees",
+"mustang","banana","liverpool","chelsea","arsenal","freedom","whatever","ninja","azerty","samsung",
+"google","london","taylor","matrix","summer","winter","flower","angel","jasmine","orange","purple","butterfly"];
+var S=["","1","12","123","1234","12345","!","@","2024","2025","01","99","007","_",".","$"];
+var DICT=(function(){var o=[],s={};for(var i=0;i<W.length;i++){for(var j=0;j<S.length;j++){
+var v=W[i]+S[j];var cap=v.charAt(0).toUpperCase()+v.slice(1);
+[ v,cap,v.toUpperCase() ].forEach(function(x){if(!s[x]){s[x]=1;o.push(x)}});}}return o})();
+var CS="abcdefghijklmnopqrstuvwxyz0123456789";
+function itp(i,l){var s="";for(var k=0;k<l;k++){s=CS[i%CS.length]+s;i=Math.floor(i/CS.length)}return s}
+
+var tabs=document.querySelectorAll(".tab");
+tabs.forEach(function(t){t.onclick=function(){tabs.forEach(function(x){x.classList.remove("on")});
+document.querySelectorAll(".p").forEach(function(p){p.classList.remove("on")});
+t.classList.add("on");$(t.dataset.p).classList.add("on")}});
+
+function log(id,txt){var e=$(id);var d=document.createElement("div");d.textContent=txt;
+e.appendChild(d);while(e.children.length>8)e.removeChild(e.firstChild)}
+
+$("os").onclick=function(){
+  var rate=parseInt($("or").value,10);
+  var h=hash("otp|"+$("ot").value), code=h%1000000, target=code;
+  $("ol").innerHTML="";
+  log("ol","> target: "+$("ot").value);
+  log("ol","> sweeping 1,000,000 codes at "+fmt(rate)+"/s");
+  $("os").disabled=true;$("orr").textContent=fmt(rate)+"/s";
+  var t=0,step=Math.max(1,Math.round(target/70));
+  var iv=setInterval(function(){
+    t=Math.min(t+step,target);
+    $("ob").style.width=(t/1000000*100).toFixed(2)+"%";
+    $("ott").textContent=fmt(t);
+    $("oc").textContent=(t/10000).toFixed(2)+"%";
+    $("oe").textContent=((1000000-t)/rate).toFixed(2)+"s";
+    if(t>=target){clearInterval(iv);$("os").disabled=false;
+      log("ol","> "+String(code).padStart(6,"0")+" accepted <-- LIVE CODE");
+      $("oe").textContent="0.00s"}
+  },60);
+};
+
+function mk(cfg){
+  $(cfg.mode).onchange=function(){$("cfg");$(cfg.bruteRow).style.display=this.value==="brute"?"flex":"none"};
+  $(cfg.start).onclick=function(){
+    var mode=$(cfg.mode).value, user=$(cfg.user).value.toLowerCase();
+    var len=parseInt($(cfg.len).value,10);
+    var total, idx, pass;
+    if(mode==="brute"){total=Math.pow(CS.length,len);idx=hash(cfg.salt+"|"+user)%total;pass=itp(idx,len)}
+    else{total=DICT.length;idx=hash(cfg.salt+"|"+user)%total;pass=DICT[idx]}
+    $(cfg.space).textContent=fmt(total);
+    $(cfg.res).style.display="none";
+    $(cfg.log).innerHTML="";
+    log(cfg.log,"> resolving "+user+" ...");
+    log(cfg.log,"> search space: "+fmt(total)+" candidates");
+    $(cfg.start).disabled=true;
+    var rate=Math.max(60,Math.round(total/10));
+    $(cfg.rate).textContent=fmt(rate)+"/s";
+    var t=0,step=Math.max(1,Math.round((idx+1)/70));
+    var iv=setInterval(function(){
+      t=Math.min(t+step,idx+1);
+      $(cfg.bar).style.width=(t/total*100).toFixed(3)+"%";
+      $(cfg.tried).textContent=fmt(t);
+      $(cfg.eta).textContent=((total-t)/rate).toFixed(1)+"s";
+      $(cfg.cur).textContent="trying: "+(mode==="brute"?itp(t,len):"(dict)");
+      if(t>=idx+1){clearInterval(iv);$(cfg.start).disabled=false;
+        $(cfg.cur).textContent="trying: "+pass;
+        log(cfg.log,"> "+pass+" accepted <-- MATCH");
+        $(cfg.ru).textContent=user;$(cfg.rp).textContent=pass;
+        $(cfg.rt).textContent=fmt(idx+1);
+        $(cfg.res).style.display="block"}
+    },60);
+  };
+}
+
+mk({user:"iu",mode:"im",len:"il",bruteRow:"ibr",start:"is",tried:"it",space:"isp",rate:"ir",
+    eta:"ie",bar:"ib",cur:"ic",log:"ilog",res:"ires",ru:"iru",rp:"irp",rt:"irt",salt:"ig"});
+mk({user:"gu",mode:"gm",len:"gl",bruteRow:"gbr",start:"gs",tried:"gt",space:"gsp",rate:"gr",
+    eta:"ge",bar:"gb",cur:"gc",log:"glog",res:"gres",ru:"gru",rp:"grp",rt:"grt",salt:"gm"});
+</script>
+</body>
+</html>

